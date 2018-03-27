@@ -11,21 +11,21 @@ import load_data as ld
 read dataset
 """
 
-#tags, questions = ld.loadData()
+tags, questions = ld.loadData()
 
 """
 get 100 most frequent tags
 """
-#freq_tags = ld.getFrequentTag(tags)
+freq_tags = ld.getFrequentTag(tags)
 
 
-#qId = ld.getQid(freq_tags,tags)
+qId = ld.getQid(freq_tags,tags)
 
 
 """
 create training set
 """
-#training_set = ld.getTrainingset(qId,questions)
+training_set = ld.getTrainingset(qId,questions)
 
 
 """
