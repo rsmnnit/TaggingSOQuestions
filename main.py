@@ -23,20 +23,10 @@ qId = ld.getQid(freq_tags,tags)
 
 
 """
-create training set
+get Dataset
 """
-training_set = ld.getTrainingset(qId,questions)
+t0 = time()
+dataset = ld.getDataset(qId,questions,freq_tags)
+print("time to get Dataset %0.3fs " %(time()-t0))
 
 
-"""
-create feature vector for body
-"""
-
-vocabulary,feature_vec = ld.getFeatureVector(training_set)
-    
-
-"""
-calculate tfidf
-"""
-
-tfidf_body = ld.getTfidf(feature_vec)
