@@ -37,75 +37,71 @@ take 100 most frequent tags
 def getFrequentTag(tags):
     tag = tags['Tag'].values.tolist()
     counts = Counter(tag).most_common(100)
-
-    return counts
+    freq_tags = pd.DataFrame(counts)
+    freq_tags.columns = ['Tag','count']
+    freq_tags = freq_tags.drop(['count'],axis=1)
+    return freq_tags
 
 
 
 def getQid(freq_tags,tags):
     qid = []
-    for p in freq_tags:
+    for p in freq_tags.itertuples():
         cnt = 100
         for q in tags.itertuples():
-            if p[0] == q[2]:
-                qid.append((q[1],q[2]))
+            
+            if p[1] == q[2]:
+                qid.append((q[1],q[2])) # Id, Tag
                 cnt-=1
             if cnt == 0:
                 break
-    return qid
-                
+    return qid            
 
 
 """
-create training set
+create dataset set
 """
 
-def getTrainingset(qId,ques):
-    training_set = []
+def getDataset(qId,ques,freq_tags):
+    dataset = pd.DataFrame(pd.np.empty((0, 103)))
+    tagslist = freq_tags['Tag'].values.tolist()
+    col = ['Id','Title','Body']
+    i = 0
+    while i<len(tagslist):
+        col.append(tagslist[i])
+        i=i+1
+    
+    
+    dataset.columns = [col]
     i = 0
     while (i<len(qId)):
         df1 = ques[(ques['Id']==qId[i][0])]
-        i = i+1
         for q in df1.itertuples():
-            training_set.append((q[1],q[2],q[3]))
-    return training_set
+            df = dataset[(dataset['Id']==qId[i][0])]
+            if df.empty:
+                temp = []
+                temp.append(q[1]) #Id
+                temp.append(q[2]) # title
+                temp.append(q[3]) #body
+                for p in freq_tags.itertuples():
+                    if qId[i][1]==p[1]: # tag of (qid or ques) == tag from list of tags
+                        temp.append(1)
+                    else:
+                        temp.append(0)
+                
+                dataset = dataset.append(pd.Series(temp,index = col),ignore_index=True)
+                
+            else:
+                
+                dataset.drop(df,axis=1)
+                df[qId[i][1]] = 1
+                dataset.append(df)
+                
+                
+        #print(qId[i][0])
+        i= i+1
+    return dataset
 
-
-
-
-
-"""
-create feature vector for body
-"""
-
-def getFeatureVector(training_set):
-    #,ngram_range=(1, 2)
-    vectorizer = CountVectorizer(stop_words='english',token_pattern=r'\b\w+\b', min_df=1)
-    body = []
-    for c,d,e in training_set:
-        body.append(e)
-
-    X = vectorizer.fit_transform(body)
-    #analyze = vectorizer.build_analyzer()
-
-    featureVectorBody = X.toarray() 
-
-    return vectorizer.vocabulary_,featureVectorBody
-
-
-
-
-
-
-"""
-calculate tfidf
-"""
-
-def getTfidf(feature_vec):
-    transformer = TfidfTransformer(smooth_idf=False)
-    tfidf = transformer.fit_transform(feature_vec)
-    return tfidf.toarray()
-    
 
 
 
