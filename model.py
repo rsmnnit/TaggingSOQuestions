@@ -36,6 +36,7 @@ questions = questions.drop(['OwnerUserId','CreationDate','ClosedDate','Score'],a
 print ("Usefule Question Columns")
 print (questions.columns.values)
 
+print ("print tags count: ")
 print (tags.count())
 print (questions.count())
 
