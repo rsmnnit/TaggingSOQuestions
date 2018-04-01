@@ -101,9 +101,9 @@ def getDataset(qId,ques,freq_tags):
                 
             else:
                 
-                dataset.drop(df,axis=1)
-                df[qId[i][1]] = 1
-                dataset.append(df)
+                
+                mask = dataset['Id']==qId[i][0] 
+                dataset.loc[mask,qId[i][1]]=1
                 
                 
         #print(qId[i][0])
