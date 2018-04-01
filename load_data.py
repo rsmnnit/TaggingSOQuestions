@@ -118,6 +118,6 @@ Function to remove links from question content
 
 def removeLinks(content):
     temp = content
-    pattern = re.compile(r'<a href>(.*)</a>')
-    pattern.sub('',temp)
+    pattern = re.compile(r'<a href>(.*)</a>') #create a pattern
+    pattern.sub('',temp) #replace the pattern with empty string
     return temp
