@@ -10,13 +10,16 @@ import load_data as ld
 """
 read dataset
 """
-
 tags, questions = ld.loadData()
+
+
 
 """
 get 100 most frequent tags
 """
 freq_tags = ld.getFrequentTag(tags)
+
+
 
 
 qId = ld.getQid(freq_tags,tags)
@@ -25,8 +28,6 @@ qId = ld.getQid(freq_tags,tags)
 """
 get Dataset
 """
-t0 = time()
-dataset = ld.getDataset(qId,questions,freq_tags)
-print("time to get Dataset %0.3fs " %(time()-t0))
+#dataset = ld.getDataset(qId,questions,freq_tags)
 
 

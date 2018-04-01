@@ -35,3 +35,10 @@ questions = questions.drop(['OwnerUserId','CreationDate','ClosedDate','Score'],a
 
 print ("Usefule Question Columns")
 print (questions.columns.values)
+
+print (tags.count())
+print (questions.count())
+
+
+#Print uniqu tags count
+#print (tags.groupby('Tag').count().sort_values(['Tag']))

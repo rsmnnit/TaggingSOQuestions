@@ -7,6 +7,7 @@ Created on Mon Mar 26 19:42:08 2018
 
 
 import pandas as pd
+import re
 from collections import Counter
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -58,15 +59,22 @@ def getQid(freq_tags,tags):
     return qid            
 
 
+
+
+
+
 """
 create dataset set
 """
-
 def getDataset(qId,ques,freq_tags):
     dataset = pd.DataFrame(pd.np.empty((0, 103)))
     tagslist = freq_tags['Tag'].values.tolist()
     col = ['Id','Title','Body']
     i = 0
+    
+    """
+    Add all frequent tags as features
+    """
     while i<len(tagslist):
         col.append(tagslist[i])
         i=i+1
@@ -104,4 +112,12 @@ def getDataset(qId,ques,freq_tags):
 
 
 
+"""
+Function to remove links from question content
+"""
 
+def removeLinks(content):
+    temp = content
+    pattern = re.compile(r'<a href>(.*)</a>')
+    pattern.sub('',temp)
+    return temp
