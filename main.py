@@ -6,8 +6,11 @@ Created on Mon Mar 26 23:59:50 2018
 """
 
 import load_data as ld
+import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import precision_recall_fscore_support
 
 """
 read dataset
@@ -33,19 +36,21 @@ get Dataset
 #dataset = ld.getDataset(qId,questions,freq_tags)
 #dataset.to_csv("dataset.csv")
 
+dataset = pd.read_csv("./dataset.csv",engine='python')
 
 vectorizer = TfidfVectorizer(stop_words='english')
 
-train = dataset.sample(frac=0.7)
+train = dataset.sample(frac=0.5)
 test = dataset.loc[~dataset.index.isin(train.index)]
 
 X_train = train['Body']+train['Title']
-X_train_idf = vectorizer.fit_transform(X_train)
+X_train_idf = vectorizer.fit_transform(X_train).toarray()
 X_test = test['Body'] + test['Title']
-X_test_idf = vectorizer.fit(X_test)
+X_test_idf = vectorizer.transform(X_test).toarray()
 
-Y_train = train.iloc[:,3:]
-Y_test = test.iloc[:,3:]
+Y_train = train.iloc[:,4:].values
+Y_test = test.iloc[:,4:].values
+
 
 
 
@@ -59,12 +64,15 @@ naiveBayes = GaussianNB()
 Get training and test dataset
 """
 
-naiveBayes.fit(X_train_idf,Y_train.iloc[:,1:2].toarray())
+naiveBayes.fit(X_train_idf,Y_train[:,97:98].flatten())
+y_pred = naiveBayes.predict(X_test_idf)
+#print (naiveBayes.score(X_test_idf,Y_test[:,1:2].flatten()))
+               
 
 
+print (confusion_matrix(Y_test[:,97:98],y_pred))
 
-
-
+print (precision_recall_fscore_support(Y_test[:,97:98],y_pred))
 
 
 
