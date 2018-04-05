@@ -37,10 +37,10 @@ take 100 most frequent tags
 
 def getFrequentTag(tags):
     tag = tags['Tag'].values.tolist()
-    counts = Counter(tag).most_common(100)
+    counts = Counter(tag).most_common(40)
     freq_tags = pd.DataFrame(counts)
     freq_tags.columns = ['Tag','count']
-    freq_tags = freq_tags.drop(['count'],axis=1)
+    #freq_tags = freq_tags.drop(['count'],axis=1)
     return freq_tags
 
 
@@ -59,6 +59,18 @@ def getQid(freq_tags,tags):
     return qid            
 
 
+def getQid2(tags,tag):
+    positive_whole = tags[(tags['Tag']==tag)]['Id']
+    negative_whole = tags[(tags['Tag']!=tag)]['Id']
+     
+    
+    positive = positive_whole.sample(frac=0.150)
+    negative = negative_whole.sample(frac = 0.006)
+    #complete = pd.concat([positive,negative])
+    print ("Classes")
+    print (positive_whole,negative_whole)
+    print ("Classes Over")
+    return positive,negative
 
 
 
@@ -111,6 +123,47 @@ def getDataset(qId,ques,freq_tags):
     return dataset
 
 
+
+
+
+def getQuestions(positive,negative,questions):
+    positive_questions = []
+    negative_questions = []
+    
+    for positive_id in positive:
+        
+        title = questions[(questions['Id']==positive_id)]['Title'].values[0]
+        question = questions[(questions['Id']==positive_id)]['Body'].values[0]
+        positive_questions.append((title,question,1))
+        
+    for negative_id in negative:
+        title = questions[(questions['Id']==negative_id)]['Title'].values[0]
+        question = questions[(questions['Id']==negative_id)]['Body'].values[0]
+        negative_questions.append((title,question,0))
+        
+
+    positive_dataset = pd.DataFrame(positive_questions)
+    positive_dataset.columns = ['Title','Body','Class']
+    positive_train = positive_dataset.sample(frac=0.7)
+    positive_test = positive_dataset.loc[~positive_dataset.index.isin(positive_train.index)]  
+    
+    negative_dataset = pd.DataFrame(negative_questions)
+    negative_dataset.columns = ['Title','Body','Class']
+    negative_train = negative_dataset.sample(frac=0.7)
+    negative_test = negative_dataset.loc[~negative_dataset.index.isin(negative_train.index)] 
+      
+        
+    #train_dataset = pd.Dataframe(positive_train,columns = ['Title','Body','Class'])
+    train_dataset = positive_train.append(negative_train)
+    
+    #test_dataset = pd.Dataframe(positive_test,columns = ['Title','Body','Class'])
+    test_dataset = positive_test.append(negative_test) 
+    
+    return train_dataset,test_dataset
+  
+  
+    
+    
 
 """
 Function to remove links from question content

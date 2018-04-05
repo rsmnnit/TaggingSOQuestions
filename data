@@ -1,0 +1,73 @@
+   Tag   count
+0      javascript  124155
+1            java  115212
+2              c#  101186
+3             php   98808
+4         android   90659
+5          jquery   78542
+6          python   64601
+7            html   58976
+8             c++   47591
+9             ios   47009
+10          mysql   42464
+11            css   42308
+12            sql   35782
+13        asp.net   29970
+14    objective-c   26922
+15  ruby-on-rails   25789
+16           .net   24059
+17              c   23238
+18         iphone   21539
+19      angularjs   20345
+20         arrays   19799
+21     sql-server   18160
+22           json   17669
+23           ruby   17013
+24              r   15701
+25           ajax   15629
+26          regex   15349
+27            xml   14763
+28        node.js   14525
+29    asp.net-mvc   14284
+30          linux   13395
+31         django   12818
+32            wpf   12365
+33       database   11860
+34          swift   11832
+35          xcode   10633
+36         string   10427
+37          excel   10384
+38         vb.net   10286
+39        windows   10142
+
+
+
+
+
+For tag javascript
+
+
+Total Tags : 2250596
+Tags with javascript : 74786
+
+Positive : 1683
+Negative :  1958
+
+0.670694864048
+[[1277  681]
+ [ 518 1165]]
+(array([ 0.71142061,  0.63109426]), array([ 0.65219612,  0.69221628]), array([ 0.68052225,  0.6602437 ]), array([1958, 1683], dtype=int64))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
