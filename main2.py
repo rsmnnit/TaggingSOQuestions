@@ -34,6 +34,10 @@ questions_test = questions.loc[~questions.index.isin(questions_train.index)]
 questions_test_ids = questions_test['Id'].values
 
 
+vectorizer2 = TfidfVectorizer(stop_words='english')
+question_test_content = questions_test['Title'] + questions_test['Body']
+question_test_tfidf = vectorizer2.transform(question_test_content).toarray()
+
 
 
 true_df = pd.DataFrane(columns = freq_tags)
@@ -62,7 +66,7 @@ tags_test = tags.loc[~tags.index.isin(tags_train.index)]
 
 
 
-test_df = pd.DataFrame(columns = freq_tags)
+test_df = pd.DataFrame()
 
 
 
@@ -92,7 +96,12 @@ for tags in freq_tags.itertuples():
     naiveBayes = GaussianNB()
     naiveBayes.fit(X_train_idf,Y_train.values)
     
-    y_pred = naiveBayes.predict(X_test_idf)
+    y_pred = naiveBayes.predict(question_test_tfidf)
+    
+    test_df[tag] = y_pred
+    
+    
+
 
 
 """
