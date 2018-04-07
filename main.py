@@ -11,6 +11,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_recall_fscore_support
+from skmultilearn.problem_transform import BinaryRelevance
+from skmultilearn.problem_transform import ClassifierChain
+from sklearn.metrics import accuracy_score
 
 """
 read dataset
@@ -51,6 +54,7 @@ X_test_idf = vectorizer.transform(X_test).toarray()
 Y_train = train.iloc[:,4:].values
 Y_test = test.iloc[:,4:].values
 
+print (Y_test)
 
 
 
@@ -58,21 +62,32 @@ Y_test = test.iloc[:,4:].values
 """
 Naive Bayes Classifier
 """
-naiveBayes = GaussianNB()
+#naiveBayes = GaussianNB()
+
+classifier = ClassifierChain(GaussianNB())
+classifier.fit(X_train_idf,Y_train)
+predictions = classifier.predict(X_test_idf)
+print (accuracy_score(Y_test,predictions))
+
 
 """
 Get training and test dataset
 """
 
+"""
 naiveBayes.fit(X_train_idf,Y_train[:,97:98].flatten())
 y_pred = naiveBayes.predict(X_test_idf)
+"""
+
+
+
 #print (naiveBayes.score(X_test_idf,Y_test[:,1:2].flatten()))
                
 
-
+"""
 print (confusion_matrix(Y_test[:,97:98],y_pred))
 
 print (precision_recall_fscore_support(Y_test[:,97:98],y_pred))
-
+"""
 
 

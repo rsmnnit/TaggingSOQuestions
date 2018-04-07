@@ -64,7 +64,7 @@ def getQid2(tags,tag):
     negative_whole = tags[(tags['Tag']!=tag)]['Id']
      
     
-    positive = positive_whole.sample(frac=0.150)
+    positive = positive_whole.sample(frac=0.001)
     negative = negative_whole.sample(frac = 0.006)
     #complete = pd.concat([positive,negative])
     print ("Classes")
