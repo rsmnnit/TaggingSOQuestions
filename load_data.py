@@ -9,8 +9,6 @@ Created on Mon Mar 26 19:42:08 2018
 import pandas as pd
 import re
 from collections import Counter
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
 
 
 
@@ -64,12 +62,16 @@ def getQid2(tags,tag):
     negative_whole = tags[(tags['Tag']!=tag)]['Id']
      
     
-    positive = positive_whole.sample(frac=0.150)
-    negative = negative_whole.sample(frac = 0.006)
+    positive = positive_whole.sample(frac=0.1250)
+    negative = negative_whole.sample(frac = 0.005)
     #complete = pd.concat([positive,negative])
+    
+    """
     print ("Classes")
     print (positive_whole,negative_whole)
     print ("Classes Over")
+    """
+    
     return positive,negative
 
 

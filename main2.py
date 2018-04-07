@@ -17,46 +17,85 @@ read dataset
 """
 
 
-#tags, questions = ld.loadData()
-
-
-#tags_train = tags.sample(frac = 0.3)
-#tags_test = tags.loc[~tags.index.isin(tags_train.index)]
+tags, questions = ld.loadData()
 
 
 
 """
-get 40 most frequent tags
+get 3 most frequent tags
 """
-#freq_tags = ld.getFrequentTag(tags_train)
-#print (freq_tags)
-
-positive,negative = ld.getQid2(tags_train,'javascript')
- 
+freq_tags = ld.getFrequentTag(tags_train)
+print (freq_tags)
 
 
-train_dataset, test_dataset = ld.getQuestions(positive,negative,questions)
-
-train_dataset.to_csv('js_train.csv')
-test_dataset.to_csv('js_test.csv')
-
-
-X_train = train_dataset['Body']
-Y_train = train_dataset['Class']
-#X_train = X_train['Body']
-
-X_test = test_dataset['Body']
-Y_test = test_dataset['Class']
-#X_test = X_test['Body']
+questions_train = questions.sample(frac = 0.05)
+questions_train_ids = questions_train['Id'].values
+questions_test = questions.loc[~questions.index.isin(questions_train.index)]
+questions_test_ids = questions_test['Id'].values
 
 
-#print ("dataset")
-
-#print (X_train.shape,Y_train.shape)
-
-#print ("dataset over")
 
 
+true_df = pd.DataFrane(columns = freq_tags)
+i=0
+
+for question_id in questions_test_ids:
+    temp = []
+    relevant_tags = tags[(tags['Id']==question_id)]['Tag'].values
+    for ind_tag in freq_tags:
+        if ind_tag in relevant_tags:
+            temp.append(1)
+        else:
+            temp.append(0)
+    true_df.loc[i] = temp
+    i=i+1
+    
+Y_test = true_df.values
+            
+
+
+tags_train = tags[(tags['Id'].isin(questions_train_ids))]
+tags_test = tags.loc[~tags.index.isin(tags_train.index)]
+
+
+
+
+
+
+test_df = pd.DataFrame(columns = freq_tags)
+
+
+
+for tags in freq_tags.itertuples():
+    tag = tags[1]
+    positive,negative = ld.getQid2(tags_train,tag)
+
+    train_dataset, test_dataset = ld.getQuestions(positive,negative,questions_train)
+
+    train_dataset.to_csv('./tagsdataset/'+tag+'_train.csv')
+    test_dataset.to_csv('./tagsdataset/'+tag+'_test.csv')
+
+    
+    vectorizer = TfidfVectorizer(stop_words='english')
+    
+    X_train = train_dataset['Body']
+    X_train_idf = vectorizer.fit_transform(X_train).toarray()
+     
+     
+    Y_train = train_dataset['Class']
+
+    #X_test = questions_test['Body']
+    #X_test_idf = vectorizer.transform(X_test).toarray()
+    #Y_test = questions_test['Class']
+    
+    
+    naiveBayes = GaussianNB()
+    naiveBayes.fit(X_train_idf,Y_train.values)
+    
+    y_pred = naiveBayes.predict(X_test_idf)
+
+
+"""
 vectorizer = TfidfVectorizer(stop_words='english')
 
 X_train_idf = vectorizer.fit_transform(X_train).toarray()
@@ -72,6 +111,7 @@ print (naiveBayes.score(X_test_idf,Y_test.values))
 print (confusion_matrix(Y_test,y_pred))
 
 print (precision_recall_fscore_support(Y_test,y_pred))
+"""
 
 #qId = ld.getQid(freq_tags,tags)
 
