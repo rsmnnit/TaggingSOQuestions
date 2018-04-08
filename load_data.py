@@ -61,11 +61,16 @@ def getQid2(tags,tag):
     positive_whole = tags[(tags['Tag']==tag)]['Id']
     negative_whole = tags[(tags['Tag']!=tag)]['Id']
      
+<<<<<<< HEAD
     
 <<<<<<< HEAD
     positive = positive_whole.sample(frac=0.1250)
     negative = negative_whole.sample(frac = 0.005)
 =======
+=======
+
+
+>>>>>>> 12a049f099a28e690f2c2326df33fd30476da5b3
     positive = positive_whole.sample(frac=0.001)
     negative = negative_whole.sample(frac = 0.006)
 >>>>>>> 117c19d373a84f41b5ad12fc33cafad42daccccc
