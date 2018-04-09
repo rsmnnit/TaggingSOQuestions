@@ -7,84 +7,127 @@ Created on Mon Mar 26 23:59:50 2018
 
 import load_data as ld
 import pandas as pd
+import pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_recall_fscore_support
+from sklearn.metrics import hamming_loss
+
 
 """
 read dataset
 """
 
 
-tags, questions = ld.loadData()
+#tags, questions = ld.loadData()
+
 
 
 
 """
-get 3 most frequent tags
+get 40 most frequent tags
+"""
 """
 freq_tags = ld.getFrequentTag(tags_train)
 print (freq_tags)
-
-
-questions_train = questions.sample(frac = 0.05)
-questions_train_ids = questions_train['Id'].values
-questions_test = questions.loc[~questions.index.isin(questions_train.index)]
-questions_test_ids = questions_test['Id'].values
-
-
-vectorizer2 = TfidfVectorizer(stop_words='english')
-question_test_content = questions_test['Title'] + questions_test['Body']
-question_test_tfidf = vectorizer2.transform(question_test_content).toarray()
+"""
 
 
 
-true_df = pd.DataFrane(columns = freq_tags)
+#questions = questions.sample(frac=0.025)
+
+
+#questions_train = questions.sample(frac = 0.5)
+#questions_train_ids = questions_train['Id'].values
+#questions_test = questions.loc[~questions.index.isin(questions_train.index)]
+#questions_test = questions_test.sample(frac=0.5)
+#questions_test_ids = questions_test['Id'].values
+
+
+#questions_ids = questions['Id'].values
+#questions_tags = tags[(tags['Id'].isin(questions_ids))]['Tag'].values.tolist()
+#freq_tags = ld.getFrequentTag(questions_tags)
+
+
+#question_test_content = questions_test['Body']
+#question_test_content = question_test_content.values
+
+#questions_train.to_csv('./questions_train.csv')
+#questions_test.to_csv('./questions_test.csv')
+
+
+questions_tags = []
+questions_test = []
+questions = []
+questions_ids = []
+
+#true_df = pd.DataFrame(columns = freq_tags['Tag'].values)
 i=0
 
+"""
 for question_id in questions_test_ids:
     temp = []
     relevant_tags = tags[(tags['Id']==question_id)]['Tag'].values
-    for ind_tag in freq_tags:
+    for ind_tag in freq_tags['Tag'].values:
         if ind_tag in relevant_tags:
             temp.append(1)
         else:
             temp.append(0)
-    true_df.loc[i] = temp
-    i=i+1
+    #print (temp)
+    temp_df = pd.DataFrame(columns = freq_tags['Tag'].values) 
+    temp_df.loc[0] = temp
+    true_df = true_df.append(temp_df,ignore_index=True)
     
 Y_test = true_df.values
-            
+"""         
+questions_test_ids = []
+
+#tags_train = tags[(tags['Id'].isin(questions_train_ids))]
+
+#questions_train_ids = []
 
 
-tags_train = tags[(tags['Id'].isin(questions_train_ids))]
-tags_test = tags.loc[~tags.index.isin(tags_train.index)]
+#tags_test = tags.loc[~tags.index.isin(tags_train.index)]
 
 
-
-
+#tags_train.to_csv('./tags_train.csv')
+#tags_test.to_csv('./tags_test.csv')
+#true_df.to_csv('./true_df.csv')
+#tags_test = []
 
 
 test_df = pd.DataFrame()
 
 
 
+
+
 for tags in freq_tags.itertuples():
     tag = tags[1]
     positive,negative = ld.getQid2(tags_train,tag)
-
-    train_dataset, test_dataset = ld.getQuestions(positive,negative,questions_train)
-
-    train_dataset.to_csv('./tagsdataset/'+tag+'_train.csv')
-    test_dataset.to_csv('./tagsdataset/'+tag+'_test.csv')
+    
+    
+    
+    
+    train_dataset = ld.getQuestions(positive,negative,questions_train)
+    
+    
+    positive = []
+    negative = []
+    
+    
+    train_dataset.to_csv('./tagsdataset3/'+tag+'_train.csv')
+    #test_dataset.to_csv('./tagsdataset2/'+tag+'_test.csv')
 
     
     vectorizer = TfidfVectorizer(stop_words='english')
     
     X_train = train_dataset['Body']
     X_train_idf = vectorizer.fit_transform(X_train).toarray()
-     
+    
+    
+    X_train = []
      
     Y_train = train_dataset['Class']
 
@@ -92,15 +135,26 @@ for tags in freq_tags.itertuples():
     #X_test_idf = vectorizer.transform(X_test).toarray()
     #Y_test = questions_test['Class']
     
-    
+    question_test_tfidf = vectorizer.transform(question_test_content).toarray()
+
     naiveBayes = GaussianNB()
     naiveBayes.fit(X_train_idf,Y_train.values)
+    
+    model_name = tag+'_naiveBayes.sav'
+    pickle.dump(naiveBayes,open(model_name,'wb'))
     
     y_pred = naiveBayes.predict(question_test_tfidf)
     
     test_df[tag] = y_pred
     
     
+print (hamming_loss(true_df.values,test_df.values)) 
+
+
+
+
+
+
 
 
 

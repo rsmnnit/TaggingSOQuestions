@@ -34,8 +34,8 @@ take 100 most frequent tags
 """
 
 def getFrequentTag(tags):
-    tag = tags['Tag'].values.tolist()
-    counts = Counter(tag).most_common(40)
+    #tag = tags['Tag'].values.tolist()
+    counts = Counter(tags).most_common(40)
     freq_tags = pd.DataFrame(counts)
     freq_tags.columns = ['Tag','count']
     #freq_tags = freq_tags.drop(['count'],axis=1)
@@ -63,8 +63,9 @@ def getQid2(tags,tag):
      
 
 
-    positive = positive_whole.sample(frac=0.001)
-    negative = negative_whole.sample(frac = 0.006)
+
+    positive = positive_whole.sample(frac=0.5)
+    negative = negative_whole.sample(frac = 0.06)
     #complete = pd.concat([positive,negative])
     
     """
@@ -133,6 +134,8 @@ def getQuestions(positive,negative,questions):
     positive_questions = []
     negative_questions = []
     
+    #questions = questions.sample( frac = 0.5)
+    
     for positive_id in positive:
         
         title = questions[(questions['Id']==positive_id)]['Title'].values[0]
@@ -147,22 +150,22 @@ def getQuestions(positive,negative,questions):
 
     positive_dataset = pd.DataFrame(positive_questions)
     positive_dataset.columns = ['Title','Body','Class']
-    positive_train = positive_dataset.sample(frac=0.7)
-    positive_test = positive_dataset.loc[~positive_dataset.index.isin(positive_train.index)]  
+    positive_train = positive_dataset.sample(n=min(500,len(positive_dataset)))
+    #positive_test = positive_dataset.loc[~positive_dataset.index.isin(positive_train.index)]  
     
     negative_dataset = pd.DataFrame(negative_questions)
     negative_dataset.columns = ['Title','Body','Class']
-    negative_train = negative_dataset.sample(frac=0.7)
-    negative_test = negative_dataset.loc[~negative_dataset.index.isin(negative_train.index)] 
+    negative_train = negative_dataset.sample(n=min(700,len(negative_dataset)))
+    #negative_test = negative_dataset.loc[~negative_dataset.index.isin(negative_train.index)] 
       
         
     #train_dataset = pd.Dataframe(positive_train,columns = ['Title','Body','Class'])
     train_dataset = positive_train.append(negative_train)
     
     #test_dataset = pd.Dataframe(positive_test,columns = ['Title','Body','Class'])
-    test_dataset = positive_test.append(negative_test) 
+    #test_dataset = positive_test.append(negative_test) 
     
-    return train_dataset,test_dataset
+    return train_dataset
   
   
     
